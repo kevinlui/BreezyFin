@@ -1,0 +1,101 @@
+﻿<Window x:Name="winMainIB" x:Class="Breezy.Fin.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:Breezy.Controls.PieChart"
+        xmlns:b="clr-namespace:Breezy.Shapes"
+        xmlns:breezy="clr-namespace:Breezy.Fin.ViewModel"
+        Title="Interactive Broker Trade Station - by Breezy" Width="680" Height="700" Closing="OnMainWindowClosing" >
+    <Window.DataContext>
+        <breezy:MainWindowViewModel />
+    </Window.DataContext>    
+    <Window.Resources>
+        <x:ArrayExtension Type="{x:Type Brush}" x:Key="brushes">
+            <SolidColorBrush Color="#9F15C3"/>
+            <SolidColorBrush Color="#FF8E01"/>
+            <SolidColorBrush Color="#339933"/>
+            <SolidColorBrush Color="#00AAFF"/>
+            <SolidColorBrush Color="#818183"/>
+            <SolidColorBrush Color="#000033"/>
+        </x:ArrayExtension>
+    </Window.Resources>
+    <Grid>
+        <TabControl x:Name="tabMain" Margin="5" Width="670" Height="590">
+            <TabItem Header="Portfolio">
+                <Grid Background="#FFE5E5E5">
+                    <StackPanel Orientation="Vertical" DataContext="{Binding PortfolioAssets}">
+                        <c:PieChartLayout HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0"
+                              x:Name="piePlotter" PlottedProperty="MarketValue" Margin="5">
+                            <c:PieChartLayout.ColorSelector>
+                                <c:IndexedColourSelector Brushes="{StaticResource brushes}"/>
+                            </c:PieChartLayout.ColorSelector>
+                        </c:PieChartLayout>
+
+                        <GroupBox Header="Bound Data" Width="Auto" Margin="5">
+                            <StackPanel Orientation="Horizontal">
+                                <ListView IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding}" Margin="10" Height="150" Width="380" Name="listBox1" GridViewColumnHeader.Click="OnColumnHeaderClick">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Symbol" DisplayMemberBinding="{Binding Path=Symbol}"/>
+                                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                            <GridViewColumn Header="Ccy" DisplayMemberBinding="{Binding Path=Currency}"/>
+                                            <GridViewColumn Header="Avg Cost" DisplayMemberBinding="{Binding Path=AvgCost, StringFormat='{}{0:C}'}"/>
+                                            <GridViewColumn Header="Position" DisplayMemberBinding="{Binding Path=Position}"/>
+                                            <GridViewColumn Header="Mkt Val" DisplayMemberBinding="{Binding Path=MarketValue, StringFormat='{}{0:C}'}"/>
+                                            <GridViewColumn Header="%" DisplayMemberBinding="{Binding Path=Percentage, StringFormat='{}{0:#%}'}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <GroupBox Header="Item Details" Width="Auto" Margin="10">
+                                    <Grid Margin="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30*" />
+                                            <RowDefinition Height="30*" />
+                                            <RowDefinition Height="30*" />
+                                            <RowDefinition Height="30*" />
+                                            <RowDefinition Height="30*" />
+                                            <RowDefinition Height="30*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78*" />
+                                            <ColumnDefinition Width="112*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Height="23" Grid.Column="0"  Grid.Row="0">Symbol:</Label>
+                                        <TextBox Text="{Binding Path=Symbol}"  Height="23" Width="110" Grid.Column="1"  Grid.Row="0" />
+
+                                        <Label Height="23" Grid.Column="0"  Grid.Row="1">Name:</Label>
+                                        <TextBox Text="{Binding Path=Name}"  Height="23" Width="110" Grid.Column="1"  Grid.Row="1" />
+
+                                        <Label Height="23" Grid.Column="0"  Grid.Row="2">Position:</Label>
+                                        <TextBox Text="{Binding Path=Position}"  Height="23" Width="110" Grid.Column="1"  Grid.Row="2" />
+
+                                        <Label Height="23" Grid.Column="0"  Grid.Row="3">AvgCost:</Label>
+                                        <TextBox Text="{Binding Path=AvgCost}"  Height="23" Width="110" Grid.Column="1"  Grid.Row="3" />
+
+                                        <Label Height="23" Grid.Column="0"  Grid.Row="4">MarketPrice:</Label>
+                                        <TextBox Text="{Binding Path=MarketPrice}"  Height="23" Width="110" Grid.Column="1"  Grid.Row="4" />
+
+                                        <Button Grid.ColumnSpan="2" Grid.Column="0"  Grid.Row="5" Click="AddNewItem" Width="80" 
+                                                HorizontalAlignment="Left" Content="Add Item"/>
+
+                                    </Grid>
+                                </GroupBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Account">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Trades">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Orders">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+        <Button x:Name="btnCalcTotal" Content="Calc Total" HorizontalAlignment="Left" Height="26" Margin="404,636,0,0" VerticalAlignment="Top" Width="102" Command="{Binding BtnClickCalcPortfolioTotal, Mode=OneWay}" />
+        <Label x:Name="lblPortfolioTotal" Content="{Binding PortfolioTotal}" HorizontalAlignment="Left" Margin="532,636,0,0" VerticalAlignment="Top" Width="133"/>
+    </Grid>
+</Window>
